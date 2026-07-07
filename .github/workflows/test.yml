@@ -1,0 +1,45 @@
+name: Automated Test Suite
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update && sudo apt-get install -y curl
+      - run: python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name: Run tests & generate reports
+        env:
+          YINGYAI_API_KEY: ${{ secrets.YINGYAI_API_KEY }}
+          GUARDIAN_SECRET: ${{ secrets.GUARDIAN_SECRET }}
+        run: |
+          mkdir -p docs
+          pytest test_suite.py -v \
+            --html=docs/report.html --self-contained-html \
+            --json-report --json-report-file=docs/test-summary.json
+
+      - name: Commit & push updated reports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git add docs/report.html docs/test-summary.json
+          if git diff --staged --quiet; then
+            echo "✅ No changes — nothing to commit"
+          else
+            git commit -m "📊 Update test reports — $(date +'%Y-%m-%d %H:%M')"
+            git push
+          fi
+
+
