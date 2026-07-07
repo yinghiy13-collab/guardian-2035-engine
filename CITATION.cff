@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+authors:
+  - family-names: Phuwongsri
+    given-names: Yingyai
+title: "Guardian 2035 Sovereign Pack — Trust & Audit Framework"
+version: 1.0.0
+date-released: 2026-07-07
+doi: 10.5281/zenodo.XXXXXXX
+url: https://github.com/yinghiy13-collab/guardian-2035-engine
+
