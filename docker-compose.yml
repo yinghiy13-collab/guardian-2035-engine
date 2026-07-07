@@ -1,0 +1,21 @@
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      YINGYAI_API_KEY: ${YINGYAI_API_KEY}
+      GUARDIAN_SECRET: ${GUARDIAN_SECRET}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  test:
+    build: .
+    depends_on:
+      api: { condition: service_healthy }
+    environment:
+      YINGYAI_API_KEY: ${YINGYAI_API_KEY}
+      GUARDIAN_SECRET: ${GUARDIAN_SECRET}
+    command: pytest test_suite.py -v
+    
