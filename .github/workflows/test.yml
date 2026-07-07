@@ -4,7 +4,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -38,9 +38,8 @@ jobs:
           git config user.email "actions@github.com"
           git add docs/report.html docs/test-summary.json
           if git diff --staged --quiet; then
-            echo "✅ No changes to reports — skip commit"
+            echo "✅ No changes — nothing to commit"
           else
             git commit -m "📊 Update test reports — $(date +'%Y-%m-%d %H:%M')"
             git push
           fi
-          
