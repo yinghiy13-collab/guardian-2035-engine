@@ -37,9 +37,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
           git add docs/report.html docs/test-summary.json
-          if git diff --staged --quiet; then
-            echo "✅ No changes — nothing to commit"
-          else
-            git commit -m "📊 Update test reports — $(date +'%Y-%m-%d %H:%M')"
-            git push
-          fi
+          git commit -m "📊 Update test reports — $(date +'%Y-%m-%d %H:%M')" || echo "✅ No changes — nothing to commit"
+          git push || echo "⚠️ Push failed — check permissions"
