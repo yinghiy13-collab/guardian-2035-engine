@@ -17,8 +17,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: sudo apt-get update && sudo apt-get install -y curl
-      - run: python -m pip install --upgrade pip && pip install -r requirements.txt
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y curl
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
 
       - name: Run tests & generate reports
         env:
@@ -30,16 +32,15 @@ jobs:
             --html=docs/report.html --self-contained-html \
             --json-report --json-report-file=docs/test-summary.json
 
-      - name: Commit & push updated reports
+      - name: Commit & push reports
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
           git add docs/report.html docs/test-summary.json
           if git diff --staged --quiet; then
-            echo "✅ No changes — nothing to commit"
+            echo "✅ No changes to reports — skip commit"
           else
             git commit -m "📊 Update test reports — $(date +'%Y-%m-%d %H:%M')"
             git push
           fi
-
-
+          
